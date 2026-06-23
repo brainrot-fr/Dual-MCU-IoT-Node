@@ -18,15 +18,11 @@
 
 > See [docs/build.md](docs/build.md) for installation and build instructions.
 
----
-
 ## What is this project
 
 A custom-PCB IoT device focused on **OTA firmware updates** and **register-level drivers** — no Vendor HAL, no Arduino framework.
 
 Features two MCUs: **STM32F411x** (main processor) and **ESP32** (Wi-Fi co-processor), communicating over a UART-based protocol with CRC-16 framing at 115,200 baud.
-
----
 
 ## Goal of this project
 
@@ -41,7 +37,6 @@ Features two MCUs: **STM32F411x** (main processor) and **ESP32** (Wi-Fi co-proce
 - PCB design best practices
 - Register-level debugging
 
----
 
 ## Features
 
@@ -53,11 +48,34 @@ Features two MCUs: **STM32F411x** (main processor) and **ESP32** (Wi-Fi co-proce
 - **FreeRTOS** task architecture
 - **Custom PCB** design
 
----
 
 ## Repository Structure
-
----
+```
+Dual-MCU-IoT-Node/
+├── docs/
+│     └──documents related to the project
+├── esp32/
+│     ├──
+├── files/
+│     ├── files for development purpose
+├── README.md
+├── stm32/
+│     ├── app/ // contains files required for stm32
+│     │   ├── inc/ 
+│     │   │   ├── headerfiles (*.h)
+│     │   ├── linker.ld // combines object files and libraries into one single binary
+│     │   ├── Makefile // used to automate the build process
+│     │   └── src/
+│     │       ├── sourcefiles (*.c)
+│     ├── bootloader/
+│             ├── the bootloader files for STM32 
+│     └── startup/
+│             ├── startup.s and startup.c for the STM32 
+├── STM32 Docs/
+      ├── DataSheet.pdf
+      ├── Programming Manual.pdf
+      └── Reference Manual.pdf
+```
 
 ## Status
 - ### ***Completed***: Phase 0.
@@ -65,8 +83,18 @@ Features two MCUs: **STM32F411x** (main processor) and **ESP32** (Wi-Fi co-proce
 
 ## Phase Structure for the project.
 
-### Phase 0: 
- - **ENTRY Gate :  ** 
-
+### [x] Phase 0: 
+ -  **Entry Gate** : Intermediate C, basic Arduino Experience.
+ - **Exit Gate** : Can compile + flash a bare-metal project, ARM memory map understood, repo live.
 
 ### Phase 1: 
+  - **Entry Gate** : Phase 0 Complete, OPENOCD flashes, stm32 vendor datasheets downloaded.
+  - **Exit Gate** : UART (ISR ring buffer + printf), GPIO, I2C (BMP280+SSD1306), SPI, Timer IC (HC-SR04), DHT22 all with register-level test harnesses. HardFault handler working
+
+### Phase 2: 
+  - **Entry Gate** : Phase 1 complete. All peripheral drivers tested and committed.
+  - **Exit Gate** : STM32 running 6-task FreeRTOS with sensor data in queues. ESP32 publishing live sensor values to MQTT visible in MQTT Explorer.
+
+### Phase 3:
+  - **Entry Gate** : Phase 2 complete. FreeRTOS running. ESP32 publishing to MQTT.
+  - **Exit Gate** : STM32 and ESP32 exchanging structured CRC-verified frames. Packet loss and corruption detected, NAK'd, and retransmitted.
