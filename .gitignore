@@ -1,0 +1,4 @@
+stm32/app/build/
+stm32/app/*.o
+stm32/app/*.hex
+stm32/app/*.elf

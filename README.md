@@ -83,18 +83,30 @@ Dual-MCU-IoT-Node/
 
 ## Phase Structure for the project.
 
-### [x] Phase 0: 
+### Phase 0: Foundation
  -  **Entry Gate** : Intermediate C, basic Arduino Experience.
  - **Exit Gate** : Can compile + flash a bare-metal project, ARM memory map understood, repo live.
 
-### Phase 1: 
+### Phase 1: STM32 Bare-Metal Peripheral Drivers 
   - **Entry Gate** : Phase 0 Complete, OPENOCD flashes, stm32 vendor datasheets downloaded.
   - **Exit Gate** : UART (ISR ring buffer + printf), GPIO, I2C (BMP280+SSD1306), SPI, Timer IC (HC-SR04), DHT22 all with register-level test harnesses. HardFault handler working
 
-### Phase 2: 
+### Phase 2: FreeRTOS + ESP32 Baseline
   - **Entry Gate** : Phase 1 complete. All peripheral drivers tested and committed.
   - **Exit Gate** : STM32 running 6-task FreeRTOS with sensor data in queues. ESP32 publishing live sensor values to MQTT visible in MQTT Explorer.
 
-### Phase 3:
+### Phase 3: Inter-MCU UART Protocol
   - **Entry Gate** : Phase 2 complete. FreeRTOS running. ESP32 publishing to MQTT.
   - **Exit Gate** : STM32 and ESP32 exchanging structured CRC-verified frames. Packet loss and corruption detected, NAK'd, and retransmitted.
+
+### Phase 4: Custom Bootloader + OTA Pipeline
+  - **Entry Gate** : Inter-MCU protocol passing all acceptance tests.
+  - **Exit Gate** : Push firmware_v2.bin to MQTT from laptop. STM32 receives, flashes, verifies, reboots into new firmware. Zero physical access required.
+
+### Phase 5: System Integration and Hardening
+  - **Entry Gate** : All subsystems individually verified.
+  - **Exit Gate** : System runs 72 hours continuously without intervention. OTA performed mid-soak. Watchdog enabled and proven. All failure modes handled.
+
+### Phase 6: PCB Design and Fabrication
+  - **Entry Gate** : v1.0 system integration complete. Every component's electrical behaviour understood.
+  - **Exit Gate** : Fabricated PCB with all subsystems running. OTA verified on custom hardware. 24-hour power-on soak passed
