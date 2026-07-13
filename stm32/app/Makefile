@@ -11,8 +11,7 @@ INC_DIR := inc
 SRCS := $(wildcard $(SRC_DIR)/*.c)
 OBJS := $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
 
-CFLAGS  := -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -std=gnu11 \
-           -Wall -Wextra -O0 -g -ffreestanding -nostdlib -I$(INC_DIR)
+CFLAGS  := -mcpu=cortex-m4 -mthumb mfpu=fpv4-sp-d16 -mfloat-abi=hard -Wall -Wextra -O0 -g3 -ffreestanding -nostdlib -I$(INC_DIR)
 LDFLAGS := -T linker.ld -nostartfiles -Wl,--gc-sections -Wl,-Map=$(BUILD_DIR)/$(TARGET).map
 
 COLORS ?= 1
@@ -26,7 +25,6 @@ else
 	RED		:=
     RESET 	:=
 endif
-
 
 .PHONY: all flash probe clean
 
