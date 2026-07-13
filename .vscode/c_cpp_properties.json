@@ -4,12 +4,18 @@
             "name": "STM32",
             "includePath": [
                 "${workspaceFolder}/stm32/app/inc",
-                "${workspaceFolder}/stm32/app/inc/**"
+                "${workspaceFolder}/stm32/app/inc/**",
+                "${workspaceFolder}/stm32/drivers/**",
+                "/usr/arm-none-eabi/include",
+                "/usr/lib/gcc/arm-none-eabi/16.1.0/include"
             ],
             "compilerPath": "/usr/bin/arm-none-eabi-gcc",
             "cStandard": "c11",
             "cppStandard": "c++17",
-            "intelliSenseMode": "gcc-arm"
+            "intelliSenseMode": "gcc-arm",
+            "defines": [
+                "STM32F411xx"
+            ]
         }
     ],
     "version": 4
