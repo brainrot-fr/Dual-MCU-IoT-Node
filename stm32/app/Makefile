@@ -8,10 +8,21 @@ SIZE    := arm-none-eabi-size
 SRC_DIR := src
 INC_DIR := inc
 
-SRCS := $(wildcard $(SRC_DIR)/*.c)
-OBJS := $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
+# --- driver wiring: add a name here when you create a new driver ---
+DRIVERS      := gpio
+DRIVERS_ROOT := ../drivers
 
-CFLAGS  := -mcpu=cortex-m4 -mthumb mfpu=fpv4-sp-d16 -mfloat-abi=hard -Wall -Wextra -O0 -g3 -ffreestanding -nostdlib -I$(INC_DIR)
+DRIVER_SRC_DIRS := $(addsuffix /src,$(addprefix $(DRIVERS_ROOT)/,$(DRIVERS)))
+DRIVER_INC_DIRS := $(addsuffix /inc,$(addprefix $(DRIVERS_ROOT)/,$(DRIVERS)))
+
+vpath %.c $(SRC_DIR) $(DRIVER_SRC_DIRS)
+
+SRCS := $(wildcard $(SRC_DIR)/*.c) $(foreach d,$(DRIVER_SRC_DIRS),$(wildcard $(d)/*.c))
+OBJS := $(addprefix $(BUILD_DIR)/,$(notdir $(SRCS:.c=.o)))
+
+CFLAGS  := -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -std=gnu11 \
+           -Wall -Wextra -O0 -g -ffreestanding -nostdlib \
+           -I$(INC_DIR) $(addprefix -I,$(DRIVER_INC_DIRS))
 LDFLAGS := -T linker.ld -nostartfiles -Wl,--gc-sections -Wl,-Map=$(BUILD_DIR)/$(TARGET).map
 
 COLORS ?= 1
@@ -31,7 +42,7 @@ endif
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).bin $(BUILD_DIR)/$(TARGET).hex
 	@$(SIZE) $(BUILD_DIR)/$(TARGET).elf
 
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
 	@$(GCC) $(CFLAGS) -c $< -o $@
 	@echo -e "[ $(GREEN)BUILDING$(RESET) ]  $@"
 
