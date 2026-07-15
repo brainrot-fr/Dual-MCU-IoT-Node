@@ -1,4 +1,15 @@
-ENTRY(Reset_Handler)
+
+/*
+ * @file    linker.ld
+ * @author  github.com/brainrot-fr
+ * @brief   Linker script for the STM32F411 firmware image.
+ *
+ * This file defines the memory layout for Flash and SRAM, places the interrupt
+ * vector table at the start of Flash, and controls where the application's
+ * code, initialized data, and zero-initialized data sections are stored.
+ */
+
+ENTRY(reset_handler)
 
 MEMORY
 {
