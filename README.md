@@ -14,7 +14,13 @@
   - [Repository Structure](#repository-structure)
   - [Status](#status)
   - [Phase Structure for the project.](#phase-structure-for-the-project)
-    - [Phase 0:](#phase-0)
+    - [Phase 0: Foundation (Completed)](#phase-0-foundation-completed)
+    - [Phase 1: STM32 Bare-Metal Peripheral Drivers](#phase-1-stm32-bare-metal-peripheral-drivers)
+    - [Phase 2: FreeRTOS + ESP32 Baseline](#phase-2-freertos--esp32-baseline)
+    - [Phase 3: Inter-MCU UART Protocol](#phase-3-inter-mcu-uart-protocol)
+    - [Phase 4: Custom Bootloader + OTA Pipeline](#phase-4-custom-bootloader--ota-pipeline)
+    - [Phase 5: System Integration and Hardening](#phase-5-system-integration-and-hardening)
+    - [Phase 6: PCB Design and Fabrication](#phase-6-pcb-design-and-fabrication)
 
 > See [docs/build.md](docs/build.md) for installation and build instructions.
 
@@ -83,7 +89,7 @@ Dual-MCU-IoT-Node/
 
 ## Phase Structure for the project.
 
-### Phase 0: Foundation
+### Phase 0: Foundation (Completed)
  -  **Entry Gate** : Intermediate C, basic Arduino Experience.
  - **Exit Gate** : Can compile + flash a bare-metal project, ARM memory map understood, repo live.
 
