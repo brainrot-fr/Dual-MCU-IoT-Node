@@ -31,14 +31,14 @@ void systick_handler(void) {
  * @param milliseconds Number of milliseconds to wait.
  * @return None.
  */
-static void delay_ms(uint32_t milliseconds) {    /* Delay for 1 second */
-    uint32_t start  = ticks;
-    uint32_t end    = start + milliseconds;
+static void delay_ms(uint32_t milliseconds) {
+    uint32_t start = ticks;
+    uint32_t end = start + milliseconds;
 
-    if (end < start) {                  /* handle overflow */
-        while(ticks > start);           /* wait until ticks wrap around to zero */
+    if (end < start) { /* handle overflow */
+        while (ticks > start); /* wait until ticks wrap around to zero */
     }
-    while(ticks < end);
+    while (ticks < end);
 }
 
 /**
@@ -46,20 +46,29 @@ static void delay_ms(uint32_t milliseconds) {    /* Delay for 1 second */
  *
  * @return This function does not return under normal operation.
  */
-int main(void)
-{
+int main(void) {
     rcc_clock_enable_pll();
 
     SysTick_Config(100000);
     __enable_irq();
 
     gpio_clock_enable(GPIOC);
+    gpio_clock_enable(GPIOA);
     gpio_set_mode(GPIOC, 13, GPIO_MODE_OUTPUT);
+    gpio_set_mode(GPIOA, 0, GPIO_MODE_INPUT);
+
+    /* PA0 is commonly wired to GND when the button is pressed, so use an
+     * internal pull-up to make the input read a clean level when idle. */
+    GPIOA->PUPDR &= ~(0x3UL << (0U * 2U));
+    GPIOA->PUPDR |= (0x1UL << (0U * 2U));
 
     while (1) {
-        gpio_toggle(GPIOC, 13);
-          /* reset -> LED on (active low) */
-        delay_ms(1000);
+        if (GPIOA->IDR & (1U << 0U)) {
+            gpio_set(GPIOC, 13);                            /* Button is pressed: LED on. */
+        }
+        else {
+            gpio_reset(GPIOC, 13);                          /* Button is released: LED off. */
+        }
     }
     return 0;
 }

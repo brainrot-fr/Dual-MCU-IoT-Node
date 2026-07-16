@@ -1,4 +1,3 @@
-
 /*
  * @file    linker.ld
  * @author  github.com/brainrot-fr
