@@ -17,7 +17,7 @@
  * @param port Pointer to the GPIO peripheral instance to enable.
  * @return None.
  */
-void gpio_clock_enable(GPIO_TypeDef *port){     /* enables clock for the port specified */
+void gpio_clock_enable(GPIO_TypeDef *port){
     uint32_t bit = ((uint32_t)port - AHB1PERIPH_BASE) / 0x400UL;
     RCC->AHB1ENR |= (1U << bit);
 }
@@ -30,7 +30,7 @@ void gpio_clock_enable(GPIO_TypeDef *port){     /* enables clock for the port sp
  * @param mode Desired operating mode for the pin.
  * @return None.
  */
-void gpio_set_mode(GPIO_TypeDef *port, uint8_t pin, gpio_mode_t mode) {     /* sets mode for the pin */
+void gpio_set_mode(GPIO_TypeDef *port, uint8_t pin, gpio_mode_t mode) {
     port->MODER &= ~(0x3UL << (pin *2));
     port->MODER |= ((uint32_t)mode << (pin * 2));
 }
@@ -42,6 +42,14 @@ void gpio_set_mode(GPIO_TypeDef *port, uint8_t pin, gpio_mode_t mode) {     /* s
  * @param pin Zero-based pin number to toggle.
  * @return None.
  */
-void gpio_toggle(GPIO_TypeDef *port, uint8_t pin) {     /* toggles a given pin */
+void gpio_toggle(GPIO_TypeDef *port, uint8_t pin) {
     port->ODR ^= (1U << pin);
+}
+
+void gpio_set(GPIO_TypeDef *port, uint8_t pin) {
+    port->ODR |= (1U << pin);
+}
+
+void gpio_reset(GPIO_TypeDef *port, uint8_t pin) {
+    port->ODR &= ~(1U << pin);
 }

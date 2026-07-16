@@ -44,3 +44,21 @@ void gpio_set_mode(GPIO_TypeDef *port, uint8_t pin, gpio_mode_t mode);
  * @return None.
  */
 void gpio_toggle(GPIO_TypeDef *port, uint8_t pin);
+
+/**
+ * @brief Set (1) the output state of a GPIO pin.
+ *
+ * @param port Pointer to the GPIO peripheral instance.
+ * @param pin Zero-based pin number to toggle.
+ * @return None.
+ */
+void gpio_set(GPIO_TypeDef *port, uint8_t pin);
+
+/**
+ * @brief Reset (0) the output state of a GPIO pin.
+ *
+ * @param port Pointer to the GPIO peripheral instance.
+ * @param pin Zero-based pin number to toggle.
+ * @return None.
+ */
+void gpio_reset(GPIO_TypeDef *port, uint8_t pin);
