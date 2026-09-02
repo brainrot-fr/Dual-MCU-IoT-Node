@@ -1,4 +1,4 @@
 # _config.yml
 title: Dual MCU IoT Node
 description: GitHub Pages site for the Dual-MCU-IoT-Node project
-remote_theme: "jekyll/minima@4de3223"
+theme: minima
