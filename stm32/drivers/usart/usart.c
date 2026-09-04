@@ -6,7 +6,7 @@ static uint16_t compute_baud_rate(uint32_t peripheral_clock, uint32_t baud_rate)
 
 void usart_enable(usart_peripheral_t usart, uint32_t peripheral_clock, uint32_t baud_rate, GPIO_TypeDef *port, uint8_t tx_pin, uint8_t rx_pin){
 
-    rcc_usart_enable(usart, *port, tx_pin, rx_pin);
+    rcc_usart_enable(usart, port, tx_pin, rx_pin);
 
     switch (usart){
 
@@ -17,7 +17,7 @@ void usart_enable(usart_peripheral_t usart, uint32_t peripheral_clock, uint32_t 
             USART1->CR1 &= ~(USART_CR1_M_Msk);   // reset M bit in CR1    - 8 data bits, 1 start bit and n stop bits
             USART1->CR1 &= ~(USART_CR1_PCE_Msk); // reset PE bit in CR1   - no parity
             USART1->CR2 &= ~(USART_CR2_STOP_1);   // reset the STOP bits   - 1 stop bit
-            USART1->BRR = compute_baud_rate(peripheral_clock, baudrate)
+            USART1->BRR = compute_baud_rate(peripheral_clock, baud_rate);
             break;
 
         case USART2_PERIPH:
@@ -27,7 +27,7 @@ void usart_enable(usart_peripheral_t usart, uint32_t peripheral_clock, uint32_t 
             USART2->CR1 &= ~(USART_CR1_M_Msk);   // reset M bit in CR1    - 8 data bits, 1 start bit and n stop bits
             USART2->CR1 &= ~(USART_CR1_PCE_Msk); // reset PE bit in CR1   - no parity
             USART2->CR2 &= ~(USART_CR2_STOP_1);   // reset the STOP bits   - 1 stop bit
-            USART2->BRR = compute_baud_rate(peripheral_clock, baudrate);
+            USART2->BRR = compute_baud_rate(peripheral_clock, baud_rate);
             break;
 
         case USART6_PERIPH:
@@ -37,7 +37,7 @@ void usart_enable(usart_peripheral_t usart, uint32_t peripheral_clock, uint32_t 
             USART6->CR1 &= ~(USART_CR1_M_Msk);   // reset M bit in CR1    - 8 data bits, 1 start bit and n stop bits
             USART6->CR1 &= ~(USART_CR1_PCE_Msk); // reset PE bit in CR1   - no parity
             USART6->CR2 &= ~(USART_CR2_STOP_1);  // reset the STOP bits   - 1 stop bit
-            USART6->BRR = compute_baud_rate(peripheral_clock, baudrate);
+            USART6->BRR = compute_baud_rate(peripheral_clock, baud_rate);
             break;
 
         default: //use USART2 as default.
@@ -47,7 +47,7 @@ void usart_enable(usart_peripheral_t usart, uint32_t peripheral_clock, uint32_t 
             USART2->CR1 &= ~(USART_CR1_M_Msk);   // reset M bit in CR1    - 8 data bits, 1 start bit and n stop bits
             USART2->CR1 &= ~(USART_CR1_PCE_Msk); // reset PE bit in CR1   - no parity
             USART2->CR2 &= ~(USART_CR2_STOP_1);  // reset the STOP bits   - 1 stop bit
-            USART2->BRR = compute_baud_rate(peripheral_clock, baudrate);
+            USART2->BRR = compute_baud_rate(peripheral_clock, baud_rate);
             break;
     }
 }
