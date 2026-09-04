@@ -2,3 +2,14 @@ stm32/app/build/
 stm32/app/*.o
 stm32/app/*.hex
 stm32/app/*.elf
+STM32 Docs/
+files/
+Dual-MCU-IoT-Node.code-workspace
+YT video scripts/
+pcb/Dual-MCU-IoT-Node/*.lck
+pcb/
+
+
+esp32/
+esp32/main/.pio
+esp32/main/.vscode/
