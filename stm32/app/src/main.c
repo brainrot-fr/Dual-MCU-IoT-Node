@@ -3,12 +3,11 @@
  * @author  github.com/brainrot-fr
  * @brief   Entry point for the STM32 blink firmware.
  *
- * This file initializes the system clock, SysTick timer, and GPIO pin used
- * by the LED blink demo. The main loop toggles the LED on and off at a fixed
- * interval.
+ * main file.
  */
-#include "stm32f411xe.h"
+
 #include "common_includes.h"
+#include "main.h"
 #include "system_stm32f4xx.h"
 
 /**
@@ -57,10 +56,7 @@ int main(void) {
     gpio_set_mode(GPIOC, 13, GPIO_MODE_OUTPUT);
     gpio_set_mode(GPIOA, 0, GPIO_MODE_INPUT);
 
-    /* PA0 is commonly wired to GND when the button is pressed, so use an
-     * internal pull-up to make the input read a clean level when idle. */
-    GPIOA->PUPDR &= ~(0x3UL << (0U * 2U));
-    GPIOA->PUPDR |= (0x1UL << (0U * 2U));
+    usart_enable(USART6_PERIPH, APB2_CLK, 115200, GPIOA, 11, 12)
 
     while (1) {
         if (GPIOA->IDR & (1U << 0U)) {

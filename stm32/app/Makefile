@@ -18,7 +18,7 @@ SRC_DIR := src
 INC_DIR := inc
 
 # Driver sources are discovered from this directory and added to the build.
-DRIVERS      := gpio rcc
+DRIVERS      := gpio rcc usart
 DRIVERS_ROOT := ../drivers
 
 DRIVER_SRC_DIRS := $(addprefix $(DRIVERS_ROOT)/,$(DRIVERS))

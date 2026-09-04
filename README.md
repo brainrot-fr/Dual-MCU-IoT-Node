@@ -13,7 +13,7 @@
   - [Features](#features)
   - [Repository Structure](#repository-structure)
   - [Status](#status)
-  - [Phase Structure for the project.](#phase-structure-for-the-project)
+  - [Phase Structure for the project](#phase-structure-for-the-project)
     - [Phase 0: Foundation (Completed)](#phase-0-foundation-completed)
     - [Phase 1: STM32 Bare-Metal Peripheral Drivers](#phase-1-stm32-bare-metal-peripheral-drivers)
     - [Phase 2: FreeRTOS + ESP32 Baseline](#phase-2-freertos--esp32-baseline)
@@ -43,7 +43,6 @@ Features two MCUs: **STM32F411x** (main processor) and **ESP32** (Wi-Fi co-proce
 - PCB design best practices
 - Register-level debugging
 
-
 ## Features
 
 - **OTA Firmware Updates** over Wi-Fi via MQTT
@@ -54,9 +53,9 @@ Features two MCUs: **STM32F411x** (main processor) and **ESP32** (Wi-Fi co-proce
 - **FreeRTOS** task architecture
 - **Custom PCB** design
 
-
 ## Repository Structure
-```
+
+```text
 Dual-MCU-IoT-Node/
 ├── docs/
 │     └──documents related to the project
@@ -84,35 +83,44 @@ Dual-MCU-IoT-Node/
 ```
 
 ## Status
-- ### ***Completed***: Phase 0.
-- ### **Ongoing**:  Phase 1.
 
-## Phase Structure for the project.
+- ### ***Completed***: Phase 0
+
+- ### **Ongoing**:  Phase 1
+
+## Phase Structure for the project
 
 ### Phase 0: Foundation (Completed)
- -  **Entry Gate** : Intermediate C, basic Arduino Experience.
- - **Exit Gate** : Can compile + flash a bare-metal project, ARM memory map understood, repo live.
 
-### Phase 1: STM32 Bare-Metal Peripheral Drivers 
-  - **Entry Gate** : Phase 0 Complete, OPENOCD flashes, stm32 vendor datasheets downloaded.
-  - **Exit Gate** : UART (ISR ring buffer + printf), GPIO, I2C (BMP280+SSD1306), SPI, Timer IC (HC-SR04), DHT22 all with register-level test harnesses. HardFault handler working
+- **Entry Gate** : Intermediate C, basic Arduino Experience.
+- **Exit Gate** : Can compile + flash a bare-metal project, ARM memory map understood, repo live.
+
+### Phase 1: STM32 Bare-Metal Peripheral Drivers
+
+- **Entry Gate** : Phase 0 Complete, OPENOCD flashes, stm32 vendor datasheets downloaded.
+- **Exit Gate** : UART (ISR ring buffer + printf), GPIO, I2C (BMP280+SSD1306), SPI, Timer IC (HC-SR04), DHT22 all with register-level test harnesses. HardFault handler working
 
 ### Phase 2: FreeRTOS + ESP32 Baseline
-  - **Entry Gate** : Phase 1 complete. All peripheral drivers tested and committed.
-  - **Exit Gate** : STM32 running 6-task FreeRTOS with sensor data in queues. ESP32 publishing live sensor values to MQTT visible in MQTT Explorer.
+
+- **Entry Gate** : Phase 1 complete. All peripheral drivers tested and committed.
+- **Exit Gate** : STM32 running 6-task FreeRTOS with sensor data in queues. ESP32 publishing live sensor values to MQTT visible in MQTT Explorer.
 
 ### Phase 3: Inter-MCU UART Protocol
-  - **Entry Gate** : Phase 2 complete. FreeRTOS running. ESP32 publishing to MQTT.
-  - **Exit Gate** : STM32 and ESP32 exchanging structured CRC-verified frames. Packet loss and corruption detected, NAK'd, and retransmitted.
+
+- **Entry Gate** : Phase 2 complete. FreeRTOS running. ESP32 publishing to MQTT.
+- **Exit Gate** : STM32 and ESP32 exchanging structured CRC-verified frames. Packet loss and corruption detected, NAK'd, and retransmitted.
 
 ### Phase 4: Custom Bootloader + OTA Pipeline
-  - **Entry Gate** : Inter-MCU protocol passing all acceptance tests.
-  - **Exit Gate** : Push firmware_v2.bin to MQTT from laptop. STM32 receives, flashes, verifies, reboots into new firmware. Zero physical access required.
+
+- **Entry Gate** : Inter-MCU protocol passing all acceptance tests.
+- **Exit Gate** : Push firmware_v2.bin to MQTT from laptop. STM32 receives, flashes, verifies, reboots into new firmware. Zero physical access required.
 
 ### Phase 5: System Integration and Hardening
-  - **Entry Gate** : All subsystems individually verified.
-  - **Exit Gate** : System runs 72 hours continuously without intervention. OTA performed mid-soak. Watchdog enabled and proven. All failure modes handled.
+
+- **Entry Gate** : All subsystems individually verified.
+- **Exit Gate** : System runs 72 hours continuously without intervention. OTA performed mid-soak. Watchdog enabled and proven. All failure modes handled.
 
 ### Phase 6: PCB Design and Fabrication
-  - **Entry Gate** : v1.0 system integration complete. Every component's electrical behaviour understood.
-  - **Exit Gate** : Fabricated PCB with all subsystems running. OTA verified on custom hardware. 24-hour power-on soak passed
+
+- **Entry Gate** : v1.0 system integration complete. Every component's electrical behaviour understood.
+- **Exit Gate** : Fabricated PCB with all subsystems running. OTA verified on custom hardware. 24-hour power-on soak passed
