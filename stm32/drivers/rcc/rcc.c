@@ -76,22 +76,18 @@ void rcc_usart_enable(usart_peripheral_t usart, GPIO_TypeDef *port, uint8_t tx_p
 
         case USART1_PERIPH:
             RCC->APB2ENR |=  RCC_APB2ENR_USART1EN;  //enable USART1 on APB2 bus
-            usart_enable(usart);
             break;
         
         case USART2_PERIPH:
             RCC->APB1ENR |=  RCC_APB1ENR_USART2EN;  //enable USART2 on APB1 bus
-            usart_enable(usart);
             break;
         
         case USART6_PERIPH:
             RCC->APB2ENR |=  RCC_APB2ENR_USART6EN;  //enable USART6 on APB2 bus
-            usart_enable(usart);
             break;
         
         default: //use USART2 as default
             RCC->APB1ENR |=  RCC_APB1ENR_USART2EN;  //enable USART2 on APB1 bus
-            usart_enable(usart);
             break;
     }
 
