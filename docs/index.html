@@ -1,11 +1,276 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dual-MCU IoT Node — Build Log</title>
+    <meta name="description"
+        content="Bare-metal STM32 + ESP32 dual-MCU IoT node. Register-level drivers, no HAL. Live build progress." />
+    <link rel="icon" href="data:," />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Bricolage+Grotesque:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+
+    <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
-    
+    <!-- ============================================================
+       PROGRESS BAR — edit this block to update overall progress.
+       - data-percent : integer 0-100, the fill amount
+       - data-label    : short text shown above the bar
+       No build step needed — just change these two attributes.
+  ============================================================= -->
+    <div id="progress-data" data-percent="19" data-label="Phase 1 · STM32 Bare-Metal Peripheral Drivers" hidden></div>
+
+    <header class="site-header">
+        <div class="wrap header-row">
+            <span class="brand">
+                <span class="brand-dot" aria-hidden="true"></span>
+                DUAL&#8209;MCU&nbsp;IOT&nbsp;NODE
+            </span>
+            <nav class="header-links">
+                <a href="about.html" rel="noopener">about</a>
+                <a href="#log">build&nbsp;log</a>
+                <a href="#stack">stack</a>
+                <a href="https://github.com/brainrot-fr" target="_blank" rel="noopener">repo</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- ============================== HERO ============================== -->
+        <section class="hero wrap">
+            <pre class="console" aria-label="boot console output"><code><span class="console-prompt">$</span> probe target
+<span class="console-ok">&gt;</span> STM32F411CEU6 :: Cortex-M4 :: no HAL.
+<span class="console-ok">&gt;</span> HSE 25MHz crystal :: PLLM 25 PLLN 200 PLLP /2 :: SYSCLK 100MHz
+<span class="console-ok">&gt;</span> flash 512K / sram 128K :: linker.ld :: reset_handler → main()
+<span class="console-ok">&gt;</span> companion: ESP32 :: link: UART 115200 :: framing: CRC&#8209;16
+<span class="console-wait">&gt;</span> status: <span id="hero-phase">loading…</span></code></pre>
+
+            <h1>Building an IoT node from bare registers up.</h1>
+            <p class="lede">
+                A dual-MCU IoT node — STM32F411 for sensing and control, ESP32 for the
+                radio — written without a vendor HAL or framework. Every peripheral
+                driver, every clock calculation, every fault handler, by hand. This
+                page tracks it as it happens.
+            </p>
+
+            <div class="progress-block">
+                <div class="progress-meta">
+                    <span id="progress-label" class="progress-phase-label"></span>
+                    <span id="progress-percent" class="progress-percent-label"></span>
+                </div>
+                <div class="progress-track" role="progressbar" aria-label="Overall project progress" aria-valuemin="0"
+                    aria-valuemax="100" id="progress-track">
+                    <div class="progress-fill" id="progress-fill"></div>
+                    <div class="progress-ticks" aria-hidden="true">
+                        <span></span><span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== REGISTER MAP / PHASES ============================== -->
+        <!--
+      Each row below is one project phase.
+      To update: change the value inside data-status on the <tr>.
+        data-status="complete" | "active" | "pending"
+      The bit indicator and row styling update automatically — no CSS edits needed.
+    -->
+        <section class="phases wrap" id="log">
+            <div class="section-heading">
+                <h2>Phase Register</h2>
+                <p class="section-sub">
+                    memory-mapped progress — one bit per phase, MSB is the finish line
+                </p>
+            </div>
+
+            <div class="register-table-wrap">
+                <table class="register-table">
+                    <thead>
+                        <tr>
+                            <th class="col-addr">addr</th>
+                            <th class="col-bit">bit</th>
+                            <th class="col-name">phase</th>
+                            <th class="col-desc">exit gate</th>
+                            <th class="col-flag">flag</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-status="complete">
+                            <td class="col-addr">0x00</td>
+                            <td class="col-bit"><span class="bit">1</span></td>
+                            <td class="col-name">Foundation</td>
+                            <td class="col-desc">
+                                Bare-metal project compiles + flashes; ARM memory map
+                                understood; repo live.
+                            </td>
+                            <td class="col-flag">
+                                <span class="flag-pill">COMPLETE</span>
+                            </td>
+                        </tr>
+
+                        <tr data-status="active">
+                            <td class="col-addr">0x01</td>
+                            <td class="col-bit"><span class="bit">·</span></td>
+                            <td class="col-name">Peripheral Drivers</td>
+                            <td class="col-desc">
+                                GPIO, UART (ISR ring buffer), I2C, SPI, timer input capture,
+                                DHT22 — register-level, HardFault handler working.
+                            </td>
+                            <td class="col-flag"><span class="flag-pill">ACTIVE</span></td>
+                        </tr>
+
+                        <tr data-status="pending">
+                            <td class="col-addr">0x02</td>
+                            <td class="col-bit"><span class="bit">0</span></td>
+                            <td class="col-name">FreeRTOS + ESP32</td>
+                            <td class="col-desc">
+                                6-task FreeRTOS on the STM32; ESP32 publishing live sensor
+                                values to MQTT.
+                            </td>
+                            <td class="col-flag"><span class="flag-pill">PENDING</span></td>
+                        </tr>
+
+                        <tr data-status="pending">
+                            <td class="col-addr">0x03</td>
+                            <td class="col-bit"><span class="bit">0</span></td>
+                            <td class="col-name">Inter-MCU Protocol</td>
+                            <td class="col-desc">
+                                CRC-verified UART frames between STM32 and ESP32; loss and
+                                corruption detected, NAK'd, retransmitted.
+                            </td>
+                            <td class="col-flag"><span class="flag-pill">PENDING</span></td>
+                        </tr>
+
+                        <tr data-status="pending">
+                            <td class="col-addr">0x04</td>
+                            <td class="col-bit"><span class="bit">0</span></td>
+                            <td class="col-name">Bootloader + OTA</td>
+                            <td class="col-desc">
+                                Push firmware over MQTT from a laptop; STM32 flashes,
+                                verifies, reboots — zero physical access.
+                            </td>
+                            <td class="col-flag"><span class="flag-pill">PENDING</span></td>
+                        </tr>
+
+                        <tr data-status="pending">
+                            <td class="col-addr">0x05</td>
+                            <td class="col-bit"><span class="bit">0</span></td>
+                            <td class="col-name">Integration &amp; Hardening</td>
+                            <td class="col-desc">
+                                72-hour continuous soak, OTA performed mid-soak, watchdog
+                                proven, failure modes handled.
+                            </td>
+                            <td class="col-flag"><span class="flag-pill">PENDING</span></td>
+                        </tr>
+
+                        <tr data-status="pending">
+                            <td class="col-addr">0x06</td>
+                            <td class="col-bit"><span class="bit">0</span></td>
+                            <td class="col-name">PCB Design &amp; Fab</td>
+                            <td class="col-desc">
+                                Fabricated custom PCB running every subsystem; OTA verified on
+                                real hardware; 24-hour power-on soak.
+                            </td>
+                            <td class="col-flag"><span class="flag-pill">PENDING</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ============================== NOW BUILDING ============================== -->
+        <section class="now wrap">
+            <div class="section-heading">
+                <h2>Now bringing up</h2>
+                <p class="section-sub">what's under the probe this week</p>
+            </div>
+            <div class="now-grid">
+                <div class="now-card">
+                    <span class="now-tag">UART</span>
+                    <h3>Polling, then interrupts</h3>
+                    <p>
+                        Validating the USART peripheral by polling SR/DR before touching
+                        NVIC — register read order matters, since both SR and DR clear
+                        flags on access. ISR-driven RX with a ring buffer is next.
+                    </p>
+                </div>
+                <div class="now-card">
+                    <span class="now-tag">CLOCK</span>
+                    <h3>25MHz HSE → 100MHz core</h3>
+                    <p>
+                        Crystal-mode HSE (not bypass), PLLM/25 · PLLN/200 · PLLP/2, VOS
+                        scale 1, 3 wait-state flash latency, APB1 at /2 for 50MHz
+                        peripheral clock.
+                    </p>
+                </div>
+                <div class="now-card">
+                    <span class="now-tag">DEBUG</span>
+                    <h3>OpenOCD over telnet</h3>
+                    <p>
+                        Live register readback to verify hardware state — resume/halt
+                        cycles to see runtime values, not just power-on-reset defaults.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== STACK ============================== -->
+        <section class="stack wrap" id="stack">
+            <div class="section-heading">
+                <h2>Hardware &amp; Toolchain</h2>
+            </div>
+            <div class="stack-grid">
+                <div class="stack-col">
+                    <h3>Hardware</h3>
+                    <ul class="stack-list">
+                        <li>
+                            STM32F411 <span class="dim">(WeAct Blackpill clone)</span>
+                        </li>
+                        <li>ESP32 DevKit V1</li>
+                        <li>ST-Link V2</li>
+                        <li>DHT22 · BMP280 · HC-SR04 · SSD1306</li>
+                    </ul>
+                </div>
+                <div class="stack-col">
+                    <h3>Toolchain</h3>
+                    <ul class="stack-list">
+                        <li>arm-none-eabi-gcc</li>
+                        <li>GNU Make</li>
+                        <li>OpenOCD</li>
+                        <li>Custom linker script, no vendor SDK</li>
+                    </ul>
+                </div>
+                <div class="stack-col">
+                    <h3>Protocol</h3>
+                    <ul class="stack-list">
+                        <li>UART <span class="dim">115200 baud</span></li>
+                        <li>CRC-16 framing</li>
+                        <li>MQTT OTA pipeline <span class="dim">(planned)</span></li>
+                        <li>Custom bootloader <span class="dim">(planned)</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="wrap footer-row">
+            <p>No HAL. No Arduino framework. Documented as it's built.</p>
+            <div class="footer-links">
+                <a href="https://github.com/brainrot-fr" target="_blank" rel="noopener">GitHub</a>
+                <span class="dim">·</span>
+                <span class="dim">YouTube — link coming soon</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
+
 </html>

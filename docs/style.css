@@ -1,0 +1,469 @@
+/* =========================================================================
+   Dual-MCU IoT Node — build log
+   Design: matte soldermask surface, copper accent, silkscreen-white text,
+   a status LED green reserved for "complete / active" states only.
+   ========================================================================= */
+
+:root {
+  --bg: #0b1310;
+  --surface: #101a15;
+  --surface-2: #16221b;
+  --line: #253328;
+  --line-soft: #1c2820;
+
+  --text: #eef3ee;
+  --text-dim: #a9b8ad;
+  --text-faint: #6d8074;
+
+  --copper: #cf8a4a;
+  --copper-soft: #8a5e35;
+  --led: #6ee7a0;
+  --led-dim: #345b41;
+  --amber: #e0b355;
+
+  --font-display: "Readex Pro", "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", "SF Mono", "JetBrains Mono Nerd", ui-monospace, Menlo, monospace;
+
+  --radius: 0.4em;
+  --wrap: 60vw;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgba(207, 138, 74, 0.06), transparent 60%),
+    var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 1em 24px;
+}
+
+a { color: var(--copper); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--led);
+  outline-offset: 3px;
+}
+
+.dim { color: var(--text-faint); }
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--text);
+}
+
+/* ---------------------------------------------------------------- header */
+
+.site-header {
+  border-bottom: 1px solid var(--line-soft);
+  background: rgba(11, 19, 16, 0.85);
+  backdrop-filter: blur(6px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.brand {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--led);
+  box-shadow: 0 0 8px 1px rgba(110, 231, 160, 0.55);
+  flex: none;
+}
+
+.header-links {
+  display: flex;
+  gap: 22px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.header-links a {
+  color: var(--text-dim);
+}
+.header-links a:hover { color: var(--copper); }
+
+/* ------------------------------------------------------------------ hero */
+
+.hero {
+  padding: 64px 24px 56px;
+}
+
+.console {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--text-dim);
+  overflow-x: auto;
+  margin: 0 0 36px;
+}
+
+.console-prompt { color: var(--copper); }
+.console-ok { color: var(--led-dim); }
+.console-wait { color: var(--amber); }
+#hero-phase { color: var(--amber); }
+
+h1 {
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.15;
+  max-width: 18ch;
+  margin-bottom: 18px;
+}
+
+.lede {
+  max-width: 62ch;
+  color: var(--text-dim);
+  font-size: 16px;
+  margin: 0 0 40px;
+}
+
+/* -------------------------------------------------------- progress bar */
+
+.progress-block {
+  max-width: 640px;
+}
+
+.progress-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.progress-phase-label {
+  letter-spacing: 0.02em;
+}
+
+.progress-percent-label {
+  color: var(--led);
+  font-weight: 600;
+}
+
+.progress-track {
+  position: relative;
+  height: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0%;
+  background: linear-gradient(90deg, var(--copper-soft), var(--led));
+  border-radius: 999px;
+  transition: width 2000ms ease-in-out;
+}
+
+.progress-ticks {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.progress-ticks span {
+  width: 1px;
+  height: 100%;
+  background: rgba(11, 19, 16, 0.55);
+}
+
+/* --------------------------------------------------------- section head */
+
+.section-heading {
+  margin-bottom: 28px;
+}
+
+.section-heading h2 {
+  font-size: 22px;
+}
+
+.section-sub {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--text-faint);
+  margin: 6px 0 0;
+}
+
+section {
+  padding: 56px 24px;
+  border-top: 1px solid var(--line-soft);
+}
+
+/* --------------------------------------------------------- phase table */
+
+.register-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.register-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 640px;
+}
+
+.register-table thead th {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  font-weight: 500;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.register-table tbody td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: top;
+}
+
+.register-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.col-addr, .col-bit {
+  font-family: var(--font-mono);
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.col-name {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.col-desc {
+  color: var(--text-dim);
+  max-width: 46ch;
+}
+
+.bit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.flag-pill {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+/* status-driven styling: edit data-status on the <tr>, everything below follows */
+
+tr[data-status="complete"] .bit {
+  background: var(--led-dim);
+  border-color: var(--led-dim);
+  color: var(--led);
+}
+tr[data-status="complete"] .flag-pill {
+  border-color: var(--led-dim);
+  color: var(--led);
+}
+tr[data-status="complete"] .col-name { color: var(--led); }
+
+tr[data-status="active"] .bit {
+  background: rgba(224, 179, 85, 0.12);
+  border-color: var(--amber);
+  color: var(--amber);
+}
+tr[data-status="active"] .flag-pill {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+tr[data-status="active"] { background: rgba(224, 179, 85, 0.04); }
+tr[data-status="active"] .col-name { color: var(--amber); }
+
+/* ------------------------------------------------------------- now grid */
+
+.now-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.now-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.now-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--copper);
+  border: 1px solid var(--copper-soft);
+  border-radius: 999px;
+  padding: 3px 9px;
+  margin-bottom: 12px;
+}
+
+.now-card h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.now-card p {
+  color: var(--text-dim);
+  font-size: 14px;
+  margin: 0;
+}
+
+/* ------------------------------------------------------------ stack grid */
+
+.stack-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.stack-col h3 {
+  font-size: 14px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+
+.stack-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stack-list li {
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  color: var(--text-dim);
+  padding-left: 16px;
+  position: relative;
+}
+
+.stack-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 6px;
+  height: 1px;
+  background: var(--copper-soft);
+}
+
+/* ------------------------------------------------------------------ footer */
+
+.site-footer {
+  border-top: 1px solid var(--line-soft);
+  padding: 28px 24px 48px;
+}
+
+.footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-faint);
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+}
+
+/* ------------------------------------------------------------- responsive */
+
+@media (max-width: 760px) {
+  .now-grid, .stack-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero { padding-top: 44px; }
+  h1 { max-width: none; }
+}
+
+/* -------------------------------------------------------- reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-fill { transition: none; }
+  html { scroll-behavior: auto; }
+}

@@ -7,7 +7,14 @@
  * main firmware source can access the GPIO and RCC helper APIs through one
  * common include.
  */
+#ifndef COMMON_INCLUDES_H
+#define COMMON_INCLUDES_H
 
-#include<stdint.h>
+#include <stdint.h>
+#include <stdbool.h>
 #include "gpio.h"
 #include "rcc.h"
+#include "usart.h"
+#include "stm32f411xe.h"
+
+#endif

@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>What is this, exactly? — Dual-MCU IoT Node</title>
+    <meta
+      name="description"
+      content="A plain-English explanation of the Dual-MCU IoT Node project: what it is, why it's built this way, and how the pieces fit together."
+    />
+    <link rel="icon" href="data:," />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap header-row">
+        <span class="brand">
+          <span class="brand-dot" aria-hidden="true"></span>
+          DUAL&#8209;MCU&nbsp;IOT&nbsp;NODE
+        </span>
+        <nav class="header-links">
+          <a href="index.html">home</a>
+          <a href="index.html#log">build&nbsp;log</a>
+          <a href="index.html#stack">stack</a>
+          <a href="https://github.com/brainrot-fr" target="_blank" rel="noopener">repo</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- ============================== STORY HERO ============================== -->
+      <section class="hero wrap story-hero">
+        <p class="eyebrow">the plain-English version</p>
+        <h1>What is this, exactly?</h1>
+        <p class="lede">
+          No jargon, no register maps — just what's being built, why it's being
+          built the hard way, and what happens next. If you want the technical
+          build log with live progress instead,
+          <a href="index.html">it's over here</a>.
+        </p>
+      </section>
+
+      <!-- ============================== THE PITCH ============================== -->
+      <section class="story wrap">
+        <div class="section-heading">
+          <h2>The short version</h2>
+        </div>
+        <p class="story-p">
+          This is a small electronic device — smaller than a deck of cards —
+          built to sense its surroundings (things like temperature, distance,
+          air pressure) and send that information over Wi-Fi, the same way a
+          smart thermostat or a fitness tracker does. What makes it different is
+          <em>how</em> it's built: every single instruction it runs was written
+          by hand, at the lowest level a computer chip understands, instead of
+          using the pre-made software toolkits most projects rely on.
+        </p>
+        <p class="story-p">
+          Think of it like the difference between assembling furniture from a
+          kit with an instruction booklet, versus milling the wood and cutting
+          the joints yourself. Both end in a table. Only one teaches you how a
+          table actually works.
+        </p>
+      </section>
+
+      <!-- ============================== TWO BRAINS ============================== -->
+      <section class="story wrap">
+        <div class="section-heading">
+          <h2>Two chips, two jobs</h2>
+          <p class="section-sub">
+            the device has two small computers on it, not one
+          </p>
+        </div>
+
+        <div class="two-col">
+          <div class="chip-card">
+            <span class="now-tag">chip 1</span>
+            <h3>STM32 — the hands</h3>
+            <p>
+              This chip is wired directly to the sensors and does the
+              moment-to-moment work: reading a temperature sensor, timing a
+              distance pulse, driving a small display. It's fast, cheap, and has
+              no operating system — every task it does is a sequence of
+              instructions written specifically for it.
+            </p>
+          </div>
+          <div class="chip-card">
+            <span class="now-tag">chip 2</span>
+            <h3>ESP32 — the mouth</h3>
+            <p>
+              This chip has Wi-Fi built in. It doesn't touch the sensors
+              directly — instead, the STM32 hands it readings over a wire, and
+              the ESP32's only job is getting that information onto the
+              internet, and later, delivering software updates back down.
+            </p>
+          </div>
+        </div>
+
+        <p class="story-p">
+          Splitting the work this way mirrors how real embedded products are
+          designed: one chip focused on hard real-time control, one focused on
+          connectivity, talking to each other over a simple, reliable wire — not
+          two jobs bolted onto one chip that's mediocre at both.
+        </p>
+      </section>
+
+      <!-- ============================== WHY THE HARD WAY ============================== -->
+      <section class="story wrap">
+        <div class="section-heading">
+          <h2>Why not just use Arduino?</h2>
+        </div>
+        <p class="story-p">
+          Arduino (and similar tools) exist to hide complexity — you write a few
+          lines of code, and a huge stack of pre-written software handles the
+          messy details of talking to the actual hardware underneath. That's
+          genuinely useful for building things quickly.
+        </p>
+        <p class="story-p">
+          This project deliberately skips that stack. Every peripheral — the
+          pins, the communication ports, the clock that keeps the chip's timing
+          accurate — is controlled by writing directly into the chip's hardware
+          "switches" (called registers), guided only by the manufacturer's
+          official documentation. It's slower to build, and mistakes are easier
+          to make. In exchange, there's no mystery layer between the code and
+          the silicon — which is exactly the point: this project exists to build
+          that understanding from the ground up, not just to end up with a
+          working gadget.
+        </p>
+      </section>
+
+      <!-- ============================== TIMELINE (plain english) ============================== -->
+      <section class="story wrap">
+        <div class="section-heading">
+          <h2>Where it's headed</h2>
+          <p class="section-sub">
+            the same roadmap as the build log, without the jargon
+          </p>
+        </div>
+
+        <ol class="plain-timeline">
+          <li class="timeline-item" data-status="complete">
+            <div class="timeline-status">
+              <span class="flag-pill">DONE</span>
+            </div>
+            <div class="timeline-body">
+              <h3>Get something working at all</h3>
+              <p>
+                Wrote the minimum code needed to make one chip start up and
+                blink a light — the "hello world" of hardware.
+              </p>
+            </div>
+          </li>
+          <li class="timeline-item" data-status="active">
+            <div class="timeline-status">
+              <span class="flag-pill">IN PROGRESS</span>
+            </div>
+            <div class="timeline-body">
+              <h3>Teach it to talk to its own sensors</h3>
+              <p>
+                Writing the drivers so the chip can read a temperature sensor, a
+                distance sensor, and a small screen — each one from scratch.
+              </p>
+            </div>
+          </li>
+          <li class="timeline-item" data-status="pending">
+            <div class="timeline-status">
+              <span class="flag-pill">NEXT</span>
+            </div>
+            <div class="timeline-body">
+              <h3>Add the Wi-Fi chip and a task scheduler</h3>
+              <p>
+                Bring the second chip online and give the first chip the ability
+                to juggle several jobs at once instead of one at a time.
+              </p>
+            </div>
+          </li>
+          <li class="timeline-item" data-status="pending">
+            <div class="timeline-status">
+              <span class="flag-pill">LATER</span>
+            </div>
+            <div class="timeline-body">
+              <h3>Get the two chips talking reliably</h3>
+              <p>
+                Build a messaging system between the two chips that can detect
+                and recover from lost or corrupted messages — the same problem
+                the internet itself has to solve.
+              </p>
+            </div>
+          </li>
+          <li class="timeline-item" data-status="pending">
+            <div class="timeline-status">
+              <span class="flag-pill">LATER</span>
+            </div>
+            <div class="timeline-body">
+              <h3>Wireless software updates</h3>
+              <p>
+                Push new firmware to the device over Wi-Fi, the same way a phone
+                updates its apps — no cables, no physical access required.
+              </p>
+            </div>
+          </li>
+          <li class="timeline-item" data-status="pending">
+            <div class="timeline-status">
+              <span class="flag-pill">LATER</span>
+            </div>
+            <div class="timeline-body">
+              <h3>Prove it's reliable</h3>
+              <p>
+                Run the whole thing continuously for 72 hours straight, pushing
+                an update partway through, to make sure it holds up outside a
+                lab bench.
+              </p>
+            </div>
+          </li>
+          <li class="timeline-item" data-status="pending">
+            <div class="timeline-status">
+              <span class="flag-pill">LATER</span>
+            </div>
+            <div class="timeline-body">
+              <h3>Design a real circuit board</h3>
+              <p>
+                Move off the breadboard onto a custom-designed, manufactured
+                circuit board — the final step from "prototype" to "product."
+              </p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- ============================== FAQ ============================== -->
+      <section class="story wrap">
+        <div class="section-heading">
+          <h2>Common questions</h2>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary>What's a microcontroller?</summary>
+            <p>
+              A tiny, self-contained computer on a single chip — a processor,
+              some memory, and the wiring to control other hardware, all in one
+              package. It's what runs inside a microwave, a car's dashboard, or
+              a smart thermostat. No screen, no operating system, no mouse — it
+              just runs one program, forever, until it's powered off.
+            </p>
+          </details>
+          <details class="faq-item">
+            <summary>What does "register-level" or "bare metal" mean?</summary>
+            <p>
+              A chip's hardware features are controlled through specific memory
+              addresses called registers — flipping a particular bit at a
+              particular address might turn on a pin, or start a timer.
+              "Register-level" or "bare metal" programming means controlling the
+              chip directly this way, rather than through a software library
+              that does it for you.
+            </p>
+          </details>
+          <details class="faq-item">
+            <summary>Is this basically an Arduino project?</summary>
+            <p>
+              It runs on similar chips, but it doesn't use the Arduino software
+              or its libraries. Everything — startup code, the compiler
+              settings, the memory layout, every driver — is written and
+              controlled directly, which is the entire point of the project.
+            </p>
+          </details>
+          <details class="faq-item">
+            <summary>What's OTA?</summary>
+            <p>
+              Short for "over-the-air" — updating a device's software wirelessly
+              instead of plugging it into a computer. It's how a phone or a
+              smart speaker gets new software. Building this for a bare-metal
+              device is a genuinely hard, industry-relevant problem, which is
+              why it's a planned phase here.
+            </p>
+          </details>
+          <details class="faq-item">
+            <summary>
+              Why not just buy a smart sensor instead of building one?
+            </summary>
+            <p>
+              Because the point isn't the sensor readings — it's understanding,
+              first-hand, everything a commercial smart device is quietly doing
+              underneath: clock configuration, interrupt handling, communication
+              protocols, safe firmware updates. The finished device is a side
+              effect of that learning process.
+            </p>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap footer-row">
+        <p>No HAL. No Arduino framework. Documented as it's built.</p>
+        <div class="footer-links">
+          <a href="index.html">Build log</a>
+          <span class="dim">·</span>
+          <a
+            href="https://github.com/brainrot-fr"
+            target="_blank"
+            rel="noopener"
+            >GitHub</a
+          >
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
