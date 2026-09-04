@@ -4,7 +4,7 @@
  * @brief   Convenience header that pulls in the common STM32 driver interfaces.
  *
  * This header centralizes the shared includes used by the application so the
- * main firmware source can access the GPIO and RCC helper APIs through one
+ * main firmware source can access the helper APIs through one
  * common include.
  */
 #ifndef COMMON_INCLUDES_H
