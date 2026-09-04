@@ -51,20 +51,15 @@ int main(void) {
     SysTick_Config(100000);
     __enable_irq();
 
-    gpio_clock_enable(GPIOC);
-    gpio_clock_enable(GPIOA);
+    rcc_clock_enable_GPIO(GPIOC);
+    rcc_clock_enable_GPIO(GPIOA);
     gpio_set_mode(GPIOC, 13, GPIO_MODE_OUTPUT);
     gpio_set_mode(GPIOA, 0, GPIO_MODE_INPUT);
 
-    usart_enable(USART6_PERIPH, APB2_CLK, 115200, GPIOA, 11, 12)
+    usart_enable(USART6_PERIPH, APB2_CLK, 115200, GPIOA, 11, 12);
 
     while (1) {
-        if (GPIOA->IDR & (1U << 0U)) {
-            gpio_set(GPIOC, 13);                            /* Button is pressed: LED on. */
-        }
-        else {
-            gpio_reset(GPIOC, 13);                          /* Button is released: LED off. */
-        }
+        usart_send_char(USART6_PERIPH, 'F');
     }
     return 0;
 }
