@@ -9,6 +9,7 @@
 #include "common_includes.h"
 #include "main.h"
 #include "system_stm32f4xx.h"
+#include <stdio.h>
 
 /**
  * @brief Counter incremented by the SysTick interrupt handler.
@@ -59,7 +60,9 @@ int main(void) {
     usart_enable(USART6_PERIPH, APB2_CLK, 115200, GPIOA, 11, 12);
 
     while (1) {
-        usart_send_char(USART6_PERIPH, 'F');
+        printf("HELLO THERE!, this is printed via printf(). %d is an int and %s is a string also %c is a char!", 23, "NAME", 'F');
+        delay_ms(1000);
+        usart_send_string("HELLO THERE!, this is printed via usart_send_string()!");
     }
     return 0;
 }

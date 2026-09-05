@@ -1,10 +1,17 @@
 #include "usart.h"
 
-static uint16_t compute_baud_rate(uint32_t peripheral_clock, uint32_t baud_rate){
-    return (peripheral_clock + (baud_rate / 2) / baud_rate);
+static usart_peripheral_t console_usart = USART6_PERIPH;
+
+static uint16_t compute_baud_rate(uint32_t peripheral_clock,  uint32_t baud_rate){
+    return ((peripheral_clock + (baud_rate / 2)) / baud_rate);
 }
 
-void usart_enable(usart_peripheral_t usart, uint32_t peripheral_clock, uint32_t baud_rate, GPIO_TypeDef *port, uint8_t tx_pin, uint8_t rx_pin){
+void usart_enable(usart_peripheral_t usart, 
+     uint32_t peripheral_clock, 
+     uint32_t baud_rate, 
+     GPIO_TypeDef *port,
+     uint8_t tx_pin,
+     uint8_t rx_pin){
 
     rcc_usart_enable(usart, port, tx_pin, rx_pin);
 
@@ -16,7 +23,7 @@ void usart_enable(usart_peripheral_t usart, uint32_t peripheral_clock, uint32_t 
             USART1->CR1 |= USART_CR1_TE_Msk;     // Set TE bit in CR1     - transmitter enable
             USART1->CR1 &= ~(USART_CR1_M_Msk);   // reset M bit in CR1    - 8 data bits, 1 start bit and n stop bits
             USART1->CR1 &= ~(USART_CR1_PCE_Msk); // reset PE bit in CR1   - no parity
-            USART1->CR2 &= ~(USART_CR2_STOP_1);   // reset the STOP bits   - 1 stop bit
+            USART1->CR2 &= ~(USART_CR2_STOP_Msk);   // reset the STOP bits   - 1 stop bit
             USART1->BRR = compute_baud_rate(peripheral_clock, baud_rate);
             break;
 
@@ -26,7 +33,7 @@ void usart_enable(usart_peripheral_t usart, uint32_t peripheral_clock, uint32_t 
             USART2->CR1 |= USART_CR1_TE_Msk;     // Set TE bit in CR1     - transmitter enable
             USART2->CR1 &= ~(USART_CR1_M_Msk);   // reset M bit in CR1    - 8 data bits, 1 start bit and n stop bits
             USART2->CR1 &= ~(USART_CR1_PCE_Msk); // reset PE bit in CR1   - no parity
-            USART2->CR2 &= ~(USART_CR2_STOP_1);   // reset the STOP bits   - 1 stop bit
+            USART2->CR2 &= ~(USART_CR2_STOP_Msk);   // reset the STOP bits   - 1 stop bit
             USART2->BRR = compute_baud_rate(peripheral_clock, baud_rate);
             break;
 
@@ -36,24 +43,22 @@ void usart_enable(usart_peripheral_t usart, uint32_t peripheral_clock, uint32_t 
             USART6->CR1 |= USART_CR1_TE_Msk;     // Set TE bit in CR1     - transmitter enable
             USART6->CR1 &= ~(USART_CR1_M_Msk);   // reset M bit in CR1    - 8 data bits, 1 start bit and n stop bits
             USART6->CR1 &= ~(USART_CR1_PCE_Msk); // reset PE bit in CR1   - no parity
-            USART6->CR2 &= ~(USART_CR2_STOP_1);  // reset the STOP bits   - 1 stop bit
+            USART6->CR2 &= ~(USART_CR2_STOP_Msk);  // reset the STOP bits   - 1 stop bit
             USART6->BRR = compute_baud_rate(peripheral_clock, baud_rate);
             break;
 
-        default: //use USART2 as default.
-            USART2->CR1 |= USART_CR1_UE_Msk;     // Set UE bit in CR1     - usart enable
-            USART2->CR1 |= USART_CR1_RE_Msk;     // Set RE bit in CR1     - receiver enable
-            USART2->CR1 |= USART_CR1_TE_Msk;     // Set TE bit in CR1     - transmitter enable
-            USART2->CR1 &= ~(USART_CR1_M_Msk);   // reset M bit in CR1    - 8 data bits, 1 start bit and n stop bits
-            USART2->CR1 &= ~(USART_CR1_PCE_Msk); // reset PE bit in CR1   - no parity
-            USART2->CR2 &= ~(USART_CR2_STOP_1);  // reset the STOP bits   - 1 stop bit
-            USART2->BRR = compute_baud_rate(peripheral_clock, baud_rate);
-            break;
+        default:
+            return;
     }
+    usart_set_console(usart);
 }
 
-uint32_t usart_send_char(usart_peripheral_t usart, uint8_t data){
-    switch (usart) {
+void usart_set_console(usart_peripheral_t usart){
+    console_usart = usart;
+}
+
+void usart_send_char(uint8_t data){
+    switch (console_usart) {
     case USART1_PERIPH:
         while (!is_bit_set(USART1->SR, USART_SR_TXE)) {}    //wait until transmitter register is ready
 
@@ -79,13 +84,20 @@ uint32_t usart_send_char(usart_peripheral_t usart, uint8_t data){
         break;
 
     default:
-        while (!is_bit_set(USART2->SR, USART_SR_TXE)) {}    //wait until transmitter register is ready
-
-        USART2->DR = data;                                      //write data into data register
-
-        while (!is_bit_set(USART2->SR, USART_SR_TC)) {}     //wait until Transmission is complete
-        break;
+        return;
     }
+}
 
-    return 0U;
+void usart_send_string(const char* str){
+    while(*str){
+        usart_send_char((uint8_t)*str++);
+    }
+}
+
+int _write(int file, char *ptr, int len){
+    (void)file;
+    for(int i = 0; i < len; i++){
+        usart_send_char((uint8_t)ptr[i]);
+    }
+    return len;
 }

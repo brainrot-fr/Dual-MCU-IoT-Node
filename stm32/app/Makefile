@@ -30,9 +30,15 @@ SRCS := $(wildcard $(SRC_DIR)/*.c) $(foreach d,$(DRIVER_SRC_DIRS),$(wildcard $(d
 OBJS := $(addprefix $(BUILD_DIR)/,$(notdir $(SRCS:.c=.o)))
 
 CFLAGS  := -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -std=gnu11 \
-           -Wall -Wextra -O0 -g -ffreestanding -nostdlib \
+           -Wall -Wextra -O0 -g -ffreestanding  \
            -I$(INC_DIR) -I.. $(addprefix -I,$(DRIVER_INC_DIRS))
-LDFLAGS := -T linker.ld -nostartfiles -Wl,--gc-sections -Wl,-Map=$(BUILD_DIR)/$(TARGET).map
+LDFLAGS := -T linker.ld \
+           -nostartfiles \
+           --specs=nano.specs \
+           --specs=nosys.specs \
+           -Wl,--gc-sections \
+           -Wl,-Map=$(BUILD_DIR)/$(TARGET).map
+
 
 COLORS ?= 1
 
